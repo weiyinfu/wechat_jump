@@ -1,0 +1,136 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="gbk"/>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-touch-fullscreen" content="yes">
+    <style>
+        .test {
+            border: 2px solid green;
+            width: 300px;
+            height: 350px;
+            background: #000;
+            position: relative;
+            COLOR: #FFF;
+        }
+
+        .test #ball {
+            width: 12px;
+            height: 12px;
+            background: #fff;
+            -webkit-border-radius: 6px;
+            position: absolute;
+            left: 0;
+            right: 0;
+        }
+    </style>
+</head>
+<body>
+
+<h2>设备方向感应测试</h2>
+<div id="msg"></div>
+
+<div id='test' tabindex='0' class="test">
+    <!--<img src="img/3.png" id="ball">-->
+    <div id="ball"></div>
+</div>
+
+<img src="http://img01.taobaocdn.com/tps/i1/T15zFIXxJaXXbIZMjj-180-70.png" id="imgLogo" alt="">
+<img src="http://img01.taobaocdn.com/tps/i1/T15zFIXxJaXXbIZMjj-180-70.png" id="imgLogo2" alt="">
+
+<script>
+    function Orientation(selector) {
+    }
+
+    Orientation.prototype.init = function () {
+        window.addEventListener('deviceorientation', this.oriListener, false);
+        window.addEventListener('MozOrientation', this.oriListener, false); //为firefox所用
+        window.addEventListener('devicemotion', this.oriListener, false);   //重力感应
+    }
+
+    Orientation.prototype.oriListener = function (e) {
+        setTimeout(function () {
+            handler(e);
+            deviceMotionHandler(e)
+        }, 10);
+
+        function handler(e) {
+            // For FF3.6+
+            if (!e.gamma && !e.beta) {
+                // angle=radian*180.0/PI 在firefox中x和y是弧度值,
+                e.gamma = (e.x * (180 / Math.PI)); //转换成角度值,
+                e.beta = (e.y * (180 / Math.PI)); //转换成角度值
+                e.alpha = (e.z * (180 / Math.PI)); //转换成角度值
+            }
+            /* beta:  -180..180 (rotation around x axis) */
+            /* gamma:  -90..90  (rotation around y axis) */
+            /* alpha:    0..360 (rotation around z axis) (-180..180) */
+
+            var gamma = e.gamma
+            var beta = e.beta
+            var alpha = e.alpha
+
+            if (e.accelerationIncludingGravity) {
+                // window.removeEventListener('deviceorientation', this.orientationListener, false);
+                gamma = e.accelerationIncludingGravity.x * 300
+                beta = -e.accelerationIncludingGravity.y * 300
+                alpha = event.accelerationIncludingGravity.z * 300
+            }
+
+            if (this._lastGamma != gamma || this._lastBeta != beta) {
+                document.querySelector("#msg").innerHTML = "x: " + beta.toFixed(2) + " y: " + gamma.toFixed(2) + " z: " + (alpha != null ? alpha.toFixed(2) : 0)
+
+
+                var style = document.querySelector("#ball").style;
+                style.left = gamma / 90 * 200 + 150 + "px";
+                style.top = beta / 90 * 200 + 100 + "px";
+
+
+                this._lastGamma = gamma;
+                this._lastBeta = beta;
+            }
+        }
+
+        function deviceMotionHandler(e) {
+            /*
+            if(e.accelerationIncludingGravity){
+                var gx = e.accelerationIncludingGravity.x;
+                var gy = e.accelerationIncludingGravity.y;
+                var gz = e.accelerationIncludingGravity.z;
+            }
+             var facingUp = -1;
+             if (gz > 0) {
+             facingUp = +1;
+             }
+             var tiltLR = Math.round(((gx) / 9.81) * -90);
+             var tiltFB = Math.round(((gy + 9.81) / 9.81) * 90 * facingUp);
+
+             //document.getElementById("moCalcTiltLR").innerHTML = tiltLR;
+             // document.getElementById("moCalcTiltFB").innerHTML = tiltFB;
+
+             var rotation = "rotate(" + tiltLR + "deg) rotate3d(1,0,0, " + (tiltFB) + "deg)";
+             document.getElementById("imgLogo").style.webkitTransform = rotation;
+           */
+
+            var gamma = e.gamma
+            var beta = e.beta
+            var alpha = e.alpha
+
+            var tiltLR = gamma; //Math.round(((beta) / 9) * -90);
+            var tiltFB = beta;
+
+            var rotation = "rotate(" + tiltLR + "deg)";
+            var rotation2 = "rotate(" + tiltFB + "deg)";
+            var style = document.querySelector("#imgLogo").style;
+            var style2 = document.querySelector("#imgLogo2").style;
+            style.webkitTransform = rotation;
+            style2.webkitTransform = rotation2;
+        }
+    };
+
+    (new Orientation()).init();
+</script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+<html>
+<head></head>
+<body>
+<div class="shock" onclick="vibration()">
+    按我手机会震动
+</div>
+</body>
+<script>
+    function vibration() {
+        navigator.vibrate = navigator.vibrate
+            || navigator.webkitVibrate
+            || navigator.mozVibrate
+            || navigator.msVibrate;
+
+        if (navigator.vibrate) {
+            // 支持
+            console.log("支持设备震动！");
+        }
+        navigator.vibrate([500, 300, 400, 300]);
+//        navigator.vibrate(0)//取消所有震动
+    }
+</script>
+</html>

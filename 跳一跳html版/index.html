@@ -1,0 +1,75 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no"/>
+    <style>
+        body {
+
+            margin: 0;
+        }
+
+        #container {
+            margin: auto;
+            position: absolute;
+            background-color: rgb(255, 218, 154);
+            width: 100%;
+            height: 100%;
+            left: 0;
+            top: 0;
+        }
+
+        #person {
+            position: absolute;
+            background-color: purple;
+            width: 10%;
+            height: 10%;
+            margin: auto;
+        }
+    </style>
+</head>
+<body>
+<!--<div id="container">-->
+<!---->
+<!--<div id="person"></div>-->
+<!--</div>-->
+<div class="shock">
+    按我手机会震动
+</div>
+</body>
+<script>
+    class Cube {
+
+    }
+
+    function $(sel) {
+        return document.querySelector(sel)
+    }
+
+    function vibration() {
+        navigator.vibrate = navigator.vibrate
+            || navigator.webkitVibrate
+            || navigator.mozVibrate
+            || navigator.msVibrate;
+
+        if (navigator.vibrate) {
+            // 支持
+            console.log("支持设备震动！");
+        }
+        $(".shock").click(function () {
+            alert("1111");
+            navigator.vibrate([500, 300, 400, 300]);
+        });
+    }
+
+    function onResize() {
+        var w = Math.min($("#container").clientWidth, $("#container").clientHeight) * 0.1
+        var h = w * 3
+        $("#person").style.width = w / $("#container").clientWidth * 100 + "%"
+        $("#person").style.height = h / $("#container").clientHeight * 100 + "%"
+    }
+
+    vibration()
+//    onResize()
+//    window.onresize = onResize()
+</script>
+</html>
